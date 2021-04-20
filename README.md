@@ -1,6 +1,6 @@
-# projet_integration
+# helpy
 
-Projet d'integration
+A new Flutter project.
 
 ## Getting Started
 

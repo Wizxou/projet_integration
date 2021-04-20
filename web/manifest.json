@@ -1,6 +1,6 @@
 {
-    "name": "projet_integration",
-    "short_name": "projet_integration",
+    "name": "helpy",
+    "short_name": "helpy",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
