@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:functional_widget_annotation/functional_widget_annotation.dart';
-part 'home.g.dart';
+part 'homePage.g.dart';
 
 final List<Map> articles = [
   {
@@ -15,7 +15,7 @@ final List<Map> articles = [
 ];
 
 @hwidget
-Widget home() {
+Widget homePage() {
   final Color primaryColor = Colors.green;
   final Color bgColor = Color(0xffF9E0E3);
   final Color secondaryColor = Color(0xff324558);
