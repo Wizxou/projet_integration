@@ -39,7 +39,7 @@ Widget authPage() {
                       ),
                       const SizedBox(height: 10.0),
                       Text(
-                        "Welcome to handyApp! \n Make things happen for yourself.",
+                        "Welcome to handyApp!! \n Make things happen for yourself.",
                         style: TextStyle(
                           color: Colors.white70,
                           fontSize: 18.0,
