@@ -12,3 +12,10 @@ class App extends HookWidget {
   @override
   Widget build(BuildContext _context) => app();
 }
+
+class AuthWrapper extends HookWidget {
+  const AuthWrapper({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext _context) => authWrapper();
+}

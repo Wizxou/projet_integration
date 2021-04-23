@@ -12,25 +12,34 @@ Widget app() {
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
   return MaterialApp(
     debugShowCheckedModeBanner: false,
+    routes: {
+      '/home': (context) => HomePage(),
+      '/auth': (context) => AuthPage(),
+    },
     home: FutureBuilder(
-      // Initialize FlutterFire:
       future: _initialization,
       builder: (context, snapshot) {
-        // Check for errors
         if (snapshot.hasError) {
           return Center(
             child: Text('An error occured'),
           );
         }
-
-        // Once complete, show your application
         if (snapshot.connectionState == ConnectionState.done) {
-          return AuthPage();
+          return AuthWrapper();
         }
-
-        // Otherwise, show something whilst waiting for initialization to complete
         return Text('Loading...');
       },
     ),
   );
+}
+
+@hwidget
+Widget authWrapper() {
+  final user = 'hello world';
+  print('from wrapper widget: $user');
+  if (user == null) {
+    return AuthPage();
+  } else {
+    return HomePage();
+  }
 }
