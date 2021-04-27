@@ -1,9 +1,13 @@
-import 'package:helpy/models/user.dart';
+import 'package:helpy/models/user.dart' as AppUser;
 import 'package:helpy/services/database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  Stream<User?> get user{
+    return _auth.authStateChanges();
+  }
 
   // sign in with email and password
   Future signInWithEmailAndPassword(String email, String password) async {

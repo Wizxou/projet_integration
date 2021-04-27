@@ -1,11 +1,24 @@
+import 'index.dart';
+
 class User {
-  final String uid;
-  User({ required this.uid });
+  String uid;
+  User({this.uid = ""});
 }
 
 class UserData {
   final String uid;
-  final String name;
-  final String postings;
-  UserData({ required this.uid, required this.postings, required this.name });
+  final String fname;
+  final String lname;
+  final String bio;
+  final bool isEmployee;
+  final List<Posting> postings;
+
+  UserData(
+    this.postings, {
+    required this.uid,
+    required this.fname,
+    required this.lname,
+    required this.bio,
+    required this.isEmployee,
+  });
 }
