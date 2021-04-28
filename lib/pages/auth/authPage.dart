@@ -162,11 +162,11 @@ Widget authPage() {
                                 ? LoginForm()
                                 : SignUpForm(),
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),
-          )
+          ),
         ],
       ),
     ),

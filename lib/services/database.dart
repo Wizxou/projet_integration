@@ -3,16 +3,19 @@ import 'package:helpy/models/posting.dart';
 import 'package:helpy/models/user.dart';
 
 class DatabaseService {
-  final String uid;
-  DatabaseService({required this.uid});
-
   // collection reference
-  final CollectionReference postingCollection =
+  final CollectionReference<Map<String, dynamic>> postingCollection =
       FirebaseFirestore.instance.collection('postings');
 
-  Future<void> updatePosting(String title, String description, String price,
-      String image, String category) async {
-    return await postingCollection.doc(uid).set({
+  void readData() {
+    postingCollection
+        .get()
+        .then((qs) => qs.docs.forEach((result) => print(result.data())));
+  }
+
+  Future<DocumentReference?> addPosting(String title, String description,
+      String price, String image, String category) async {
+    return await postingCollection.add({
       'title': title,
       'description': description,
       'price': price,
@@ -21,9 +24,9 @@ class DatabaseService {
     });
   }
 
-  Future<DocumentReference?> addPosting(String title, String description,
-      String price, String image, String category) async {
-    return await postingCollection.add({
+  Future<void> updatePosting(String title, String description, String price,
+      String image, String category, String uid) async {
+    return await postingCollection.doc(uid).update({
       'title': title,
       'description': description,
       'price': price,
@@ -51,7 +54,7 @@ class DatabaseService {
   }
 
   // get postings stream
-  Stream<List<Posting>> get postings {
-    return postingCollection.snapshots().map(_postingListFromSnapshot);
+  Stream<QuerySnapshot<Map<String, dynamic>>> get postings {
+    return postingCollection.snapshots();
   }
 }

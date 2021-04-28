@@ -1,28 +1,22 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:functional_widget_annotation/functional_widget_annotation.dart';
+import 'package:helpy/components/forms/createPostingForm.dart';
+import 'package:helpy/models/index.dart';
+import 'package:helpy/services/database.dart';
 part 'homePage.g.dart';
-
-final List<Map> articles = [
-  {
-    "title": "Need help with my ugly lawn in Montreal, QC",
-    "author": "Hamza Lakrati",
-    "price": "10.00",
-    "image":
-        "https://images.unsplash.com/photo-1559702971-54d4089fc5a5?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
-  },
-];
 
 @hwidget
 Widget homePage() {
+  final context = useContext();
+  final formVisible = useState(false);
   final Color primaryColor = Colors.green;
   final Color bgColor = Color(0xffF9E0E3);
   final Color secondaryColor = Color(0xff324558);
 
-  Widget _buildArticleItem(int index) {
-    Map article = articles[index];
-    // final String sample = images[2];
+  Widget _buildArticleItem(Posting? posting) {
     return Container(
       color: Colors.white,
       child: Stack(
@@ -43,7 +37,7 @@ Widget homePage() {
                   color: Colors.blue,
                   width: 80.0,
                   child: Image.network(
-                    article["image"],
+                    posting?.image ?? '',
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -53,7 +47,7 @@ Widget homePage() {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        article["title"],
+                        posting?.title ?? '',
                         textAlign: TextAlign.justify,
                         style: TextStyle(
                           color: secondaryColor,
@@ -65,7 +59,7 @@ Widget homePage() {
                         TextSpan(
                           children: [
                             TextSpan(
-                                text: article["author"],
+                                text: '${posting?.price ?? ''}',
                                 style: TextStyle(fontSize: 16.0)),
                           ],
                         ),
@@ -81,8 +75,6 @@ Widget homePage() {
       ),
     );
   }
-
-  final context = useContext();
 
   return DefaultTabController(
     initialIndex: 0,
@@ -107,10 +99,11 @@ Widget homePage() {
       ),
       child: Scaffold(
         backgroundColor: Theme.of(context).buttonColor,
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.green,
           child: Icon(Icons.add),
-          onPressed: () => print('hellow orld'),
+          onPressed: () => Navigator.pushNamed(context, '/createPosting'),
         ),
         appBar: AppBar(
           centerTitle: true,
@@ -141,39 +134,72 @@ Widget homePage() {
             ],
           ),
         ),
-        body: TabBarView(
-          children: <Widget>[
-            ListView.separated(
-              padding: const EdgeInsets.all(16.0),
-              itemCount: articles.length,
-              itemBuilder: (context, index) {
-                return _buildArticleItem(index);
-              },
-              separatorBuilder: (context, index) =>
-                  const SizedBox(height: 16.0),
-            ),
-            Container(
-              child: Text("Tab 2"),
+        body: Stack(
+          children: [
+            TabBarView(
+              children: [
+                StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                  stream: DatabaseService().postings,
+                  builder: (BuildContext context,
+                      AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                          snapshot) {
+                    if (snapshot.hasError) {
+                      return Text('Something went wrong');
+                    }
+
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Text("Loading");
+                    }
+
+                    if (snapshot.hasData) {
+                      List<QueryDocumentSnapshot<Map<String, dynamic>>>
+                          elements = snapshot.data!.docs;
+
+                      if (elements.isNotEmpty) {
+                        return new ListView.separated(
+                          itemCount: elements.length,
+                          itemBuilder: (context, index) {
+                            final elementData = elements[index].data();
+                            final posting = Posting(
+                              title: elementData['title'],
+                              description: elementData['description'],
+                              price: elementData['price'].toDouble(),
+                              image: elementData['image'],
+                              creatorUID: elementData['creatorUID'],
+                              employeeUID: elementData['employeeUID'],
+                              category: PostingCategory.LawnMowing,
+                            );
+                            return _buildArticleItem(posting);
+                          },
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(height: 16.0),
+                        );
+                      }
+                    }
+                    return Text('hello');
+                  },
+                ),
+                Text('hello')
+              ],
             ),
           ],
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: 0,
-          type: BottomNavigationBarType.fixed,
-          items: [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              title: Text(""),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline),
-              title: Text(""),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.settings),
-              title: Text(""),
-            ),
-          ],
+        bottomNavigationBar: BottomAppBar(
+          shape: CircularNotchedRectangle(),
+          child: BottomNavigationBar(
+            currentIndex: 0,
+            type: BottomNavigationBarType.fixed,
+            items: [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                title: Text(""),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person_outline),
+                title: Text(""),
+              ),
+            ],
+          ),
         ),
       ),
     ),

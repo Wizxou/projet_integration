@@ -26,6 +26,7 @@ Widget app() {
       routes: {
         '/home': (context) => HomePage(),
         '/auth': (context) => AuthPage(),
+        '/createPosting': (context) => CreatePostingPage(),
       },
       home: FutureBuilder(
         future: _initialization,
@@ -36,7 +37,7 @@ Widget app() {
             );
           }
           if (snapshot.connectionState == ConnectionState.done) {
-            return AuthWrapper();
+            return HomePage();
           }
           return Text('Loading...');
         },
