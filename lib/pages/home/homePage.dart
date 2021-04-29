@@ -5,13 +5,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:functional_widget_annotation/functional_widget_annotation.dart';
 import 'package:helpy/components/forms/createPostingForm.dart';
 import 'package:helpy/models/index.dart';
+import 'package:helpy/pages/profile/profilePage.dart';
 import 'package:helpy/services/database.dart';
 part 'homePage.g.dart';
 
 @hwidget
 Widget homePage() {
   final context = useContext();
-  final formVisible = useState(false);
+  final currentIndex = useState<int>(0);
   final Color primaryColor = Colors.green;
   final Color bgColor = Color(0xffF9E0E3);
   final Color secondaryColor = Color(0xff324558);
@@ -107,7 +108,7 @@ Widget homePage() {
         ),
         appBar: AppBar(
           centerTitle: true,
-          title: Text('Postings'),
+          title: currentIndex.value == 0 ? Text('Postings') : Text('Profile'),
           actions: <Widget>[
             IconButton(
               icon: Icon(
@@ -117,78 +118,87 @@ Widget homePage() {
               onPressed: () {},
             )
           ],
-          bottom: TabBar(
-            isScrollable: true,
-            labelColor: primaryColor,
-            indicatorColor: primaryColor,
-            unselectedLabelColor: secondaryColor,
-            tabs: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text("Lawn Mowing"),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text("Snow Clearing"),
-              ),
-            ],
-          ),
+          bottom: currentIndex.value == 0
+              ? TabBar(
+                  isScrollable: true,
+                  labelColor: primaryColor,
+                  indicatorColor: primaryColor,
+                  unselectedLabelColor: secondaryColor,
+                  tabs: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text("Lawn Mowing"),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text("Snow Clearing"),
+                    ),
+                  ],
+                )
+              : null,
         ),
-        body: Stack(
-          children: [
-            TabBarView(
-              children: [
-                StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                  stream: DatabaseService().postings,
-                  builder: (BuildContext context,
-                      AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
-                          snapshot) {
-                    if (snapshot.hasError) {
-                      return Text('Something went wrong');
-                    }
+        body: currentIndex.value == 0
+            ? Stack(
+                children: [
+                  TabBarView(
+                    children: [
+                      StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                        stream: DatabaseService().postings,
+                        builder: (BuildContext context,
+                            AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                                snapshot) {
+                          if (snapshot.hasError) {
+                            return Text('Something went wrong');
+                          }
 
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Text("Loading");
-                    }
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Text("Loading");
+                          }
 
-                    if (snapshot.hasData) {
-                      List<QueryDocumentSnapshot<Map<String, dynamic>>>
-                          elements = snapshot.data!.docs;
+                          if (snapshot.hasData) {
+                            List<QueryDocumentSnapshot<Map<String, dynamic>>>
+                                elements = snapshot.data!.docs;
 
-                      if (elements.isNotEmpty) {
-                        return new ListView.separated(
-                          itemCount: elements.length,
-                          itemBuilder: (context, index) {
-                            final elementData = elements[index].data();
-                            final posting = Posting(
-                              title: elementData['title'],
-                              description: elementData['description'],
-                              price: elementData['price'].toDouble(),
-                              image: elementData['image'],
-                              creatorUID: elementData['creatorUID'],
-                              employeeUID: elementData['employeeUID'],
-                              category: PostingCategory.LawnMowing,
-                            );
-                            return _buildArticleItem(posting);
-                          },
-                          separatorBuilder: (context, index) =>
-                              const SizedBox(height: 16.0),
-                        );
-                      }
-                    }
-                    return Text('hello');
-                  },
-                ),
-                Text('hello')
-              ],
-            ),
-          ],
-        ),
+                            if (elements.isNotEmpty) {
+                              return new ListView.separated(
+                                itemCount: elements.length,
+                                itemBuilder: (context, index) {
+                                  final elementData = elements[index].data();
+                                  final posting = Posting(
+                                    title: elementData['title'],
+                                    description: elementData['description'],
+                                    price: elementData['price'].toDouble(),
+                                    image: elementData['image'],
+                                    creatorUID: elementData['creatorUID'],
+                                    employeeUID: elementData['employeeUID'],
+                                    category: PostingCategory.LawnMowing,
+                                  );
+                                  return _buildArticleItem(posting);
+                                },
+                                separatorBuilder: (context, index) =>
+                                    const SizedBox(height: 16.0),
+                              );
+                            }
+                          }
+                          return Text('hello');
+                        },
+                      ),
+                      Text('hello')
+                    ],
+                  ),
+                ],
+              )
+            : ProfilePage(),
         bottomNavigationBar: BottomAppBar(
           shape: CircularNotchedRectangle(),
           child: BottomNavigationBar(
-            currentIndex: 0,
+            currentIndex: currentIndex.value,
             type: BottomNavigationBarType.fixed,
+            onTap: (value) {
+              print(value);
+              currentIndex.value = value;
+            },
             items: [
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),

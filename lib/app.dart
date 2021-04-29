@@ -6,10 +6,11 @@ import 'package:flutter/widgets.dart';
 import 'package:helpy/modules/posting_creation.dart';
 import 'package:helpy/pages/index.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:helpy/pages/profile/profilePage.dart';
 import 'package:helpy/services/authentication.dart';
 import 'package:provider/provider.dart';
-
 import 'models/index.dart';
+
 part 'app.g.dart';
 
 @hwidget
@@ -27,6 +28,7 @@ Widget app() {
         '/home': (context) => HomePage(),
         '/auth': (context) => AuthPage(),
         '/createPosting': (context) => CreatePostingPage(),
+        'profile': (context) => ProfilePage(),
       },
       home: FutureBuilder(
         future: _initialization,
