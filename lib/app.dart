@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:functional_widget_annotation/functional_widget_annotation.dart';
@@ -6,10 +7,8 @@ import 'package:flutter/widgets.dart';
 import 'package:helpy/modules/posting_creation.dart';
 import 'package:helpy/pages/index.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:helpy/pages/profile/profilePage.dart';
-import 'package:helpy/services/authentication.dart';
+import 'package:helpy/providers/index.dart';
 import 'package:provider/provider.dart';
-import 'models/index.dart';
 
 part 'app.g.dart';
 
@@ -18,8 +17,11 @@ Widget app() {
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
   return MultiProvider(
     providers: [
+      Provider<AuthenticationProvider>(
+          create: (context) => AuthenticationProvider(FirebaseAuth.instance)),
       StreamProvider(
-          create: (context) => AuthService().user, initialData: User()),
+          create: (context) => context.read<AuthenticationProvider>().authState,
+          initialData: null),
       ChangeNotifierProvider<PostingCreation>.value(value: PostingCreation()),
     ],
     child: MaterialApp(
@@ -28,7 +30,6 @@ Widget app() {
         '/home': (context) => HomePage(),
         '/auth': (context) => AuthPage(),
         '/createPosting': (context) => CreatePostingPage(),
-        'profile': (context) => ProfilePage(),
       },
       home: FutureBuilder(
         future: _initialization,
@@ -39,7 +40,7 @@ Widget app() {
             );
           }
           if (snapshot.connectionState == ConnectionState.done) {
-            return HomePage();
+            return AuthWrapper();
           }
           return Text('Loading...');
         },
@@ -50,8 +51,8 @@ Widget app() {
 
 @hwidget
 Widget authWrapper() {
-  final user = 'hello world';
-  print('from wrapper widget: $user');
+  final context = useContext();
+  final user = Provider.of<User?>(context);
   if (user == null) {
     return AuthPage();
   } else {
