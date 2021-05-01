@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:helpy/services/database.dart';
 
 class AuthenticationProvider {
   final FirebaseAuth firebaseAuth;
@@ -21,10 +22,15 @@ class AuthenticationProvider {
     }
   }
 
-  Future<String> signUp(String email, String password) async {
+  Future<String> signUp(String email, String password,
+      {required isEmployee}) async {
     try {
-      await firebaseAuth.createUserWithEmailAndPassword(
+      final userCredentials = await firebaseAuth.createUserWithEmailAndPassword(
           email: email, password: password);
+      if (userCredentials.user != null) {
+        await DatabaseService().createUserData(userCredentials.user!.uid,
+            email: email, isEmployee: isEmployee);
+      }
       return "Signed up";
     } on FirebaseAuthException catch (e) {
       return e.message ?? 'erro';
