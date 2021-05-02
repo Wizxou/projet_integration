@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:helpy/models/posting.dart';
 import 'package:helpy/models/user.dart';
-import 'package:username_gen/username_gen.dart';
+// import 'package:username_gen/username_gen.dart';
 
 class DatabaseService {
   // collection reference
@@ -16,25 +16,37 @@ class DatabaseService {
         .then((qs) => qs.docs.forEach((result) => print(result.data())));
   }
 
-  Future<DocumentReference?> addPosting(String title, String description,
-      String price, String image, String category) async {
+  Future<DocumentReference?> addPosting(
+      {required String title,
+      required String description,
+      required double price,
+      required String image,
+      required String category,
+      required String uid}) async {
     return await postingCollection.add({
       'title': title,
       'description': description,
       'price': price,
       'image': image,
-      'category': category
+      'category': category,
+      'employeeUID': '',
+      'creatorUID': uid
     });
   }
 
-  Future<void> updatePosting(String title, String description, String price,
-      String image, String category, String uid) async {
-    return await postingCollection.doc(uid).update({
+  Future<void> updatePosting(
+      {required String title,
+      required String description,
+      required String price,
+      required String image,
+      required String category,
+      required String postingUID}) async {
+    return await postingCollection.doc(postingUID).update({
       'title': title,
       'description': description,
       'price': price,
       'image': image,
-      'category': category
+      'category': category,
     });
   }
 
@@ -65,7 +77,7 @@ class DatabaseService {
   Future<void> createUserData(String uid,
       {required String email, required bool isEmployee}) async {
     final newUserDoc = await userCollection.doc(uid).set({
-      'username': UsernameGen.gen(),
+      'username': 'default',
       'email': '',
       'isEmployee': isEmployee,
       'bio': '',

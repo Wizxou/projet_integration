@@ -1,20 +1,25 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:functional_widget_annotation/functional_widget_annotation.dart';
-import 'package:helpy/models/index.dart';
+import 'package:helpy/models/posting.dart';
 import 'package:helpy/pages/profile/profilePage.dart';
 import 'package:helpy/services/database.dart';
+import 'package:provider/provider.dart';
 part 'homePage.g.dart';
 
 @hwidget
 Widget homePage() {
   final context = useContext();
+  final user = Provider.of<User?>(context);
   final currentIndex = useState<int>(0);
   final Color primaryColor = Colors.green;
   final Color bgColor = Color(0xffF9E0E3);
   final Color secondaryColor = Color(0xff324558);
+
+  // print(user);
 
   Widget _buildArticleItem(Posting? posting) {
     return Container(

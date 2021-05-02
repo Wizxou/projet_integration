@@ -79,7 +79,7 @@ Widget signUpForm() {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20.0),
           ),
-          child: Text("Sign Upx"),
+          child: Text("Sign Up"),
           onPressed: () {
             context.read<AuthenticationProvider>().signUp(
                 _emailListenable.text.trim(), _passwordListenable.text.trim(),
