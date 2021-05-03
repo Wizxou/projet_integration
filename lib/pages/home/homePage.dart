@@ -5,6 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:functional_widget_annotation/functional_widget_annotation.dart';
 import 'package:helpy/models/posting.dart';
+import 'package:helpy/pages/posting/postingPage.dart';
 import 'package:helpy/pages/profile/profilePage.dart';
 import 'package:helpy/services/database.dart';
 import 'package:provider/provider.dart';
@@ -21,62 +22,71 @@ Widget homePage() {
 
   // print(user);
 
-  Widget _buildArticleItem(Posting? posting) {
-    return Container(
-      color: Colors.white,
-      child: Stack(
-        children: <Widget>[
-          Container(
-            width: 90,
-            height: 90,
-            color: bgColor,
-          ),
-          Container(
-            color: Colors.white,
-            padding: const EdgeInsets.all(16.0),
-            margin: const EdgeInsets.all(16.0),
-            child: Row(
-              children: <Widget>[
-                Container(
-                  height: 100,
-                  color: Colors.blue,
-                  width: 80.0,
-                  child: Image.network(
-                    posting?.image ?? '',
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                const SizedBox(width: 20.0),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        posting?.title ?? '',
-                        textAlign: TextAlign.justify,
-                        style: TextStyle(
-                          color: secondaryColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18.0,
-                        ),
-                      ),
-                      Text.rich(
-                        TextSpan(
-                          children: [
-                            TextSpan(
-                                text: '${posting?.price ?? ''}',
-                                style: TextStyle(fontSize: 16.0)),
-                          ],
-                        ),
-                        style: TextStyle(height: 2.0),
-                      ),
-                    ],
-                  ),
-                )
-              ],
+  Widget _buildArticleItem(Posting posting) {
+    final postingColor = posting.category == PostingCategory.LawnMowing
+        ? primaryColor
+        : Colors.blue;
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => PostingPage(posting)));
+      },
+      child: Container(
+        color: Colors.white,
+        child: Stack(
+          children: <Widget>[
+            Container(
+              width: 90,
+              height: 90,
+              color: postingColor,
             ),
-          )
-        ],
+            Container(
+              color: Colors.white,
+              padding: const EdgeInsets.all(16.0),
+              margin: const EdgeInsets.all(16.0),
+              child: Row(
+                children: <Widget>[
+                  Container(
+                    height: 100,
+                    color: Colors.blue,
+                    width: 80.0,
+                    child: Image.network(
+                      posting.image,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  const SizedBox(width: 20.0),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          posting.title,
+                          textAlign: TextAlign.justify,
+                          style: TextStyle(
+                            color: postingColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18.0,
+                          ),
+                        ),
+                        Text.rich(
+                          TextSpan(
+                            children: [
+                              TextSpan(
+                                  text: '${posting.price}',
+                                  style: TextStyle(fontSize: 16.0)),
+                            ],
+                          ),
+                          style: TextStyle(height: 2.0),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -106,27 +116,18 @@ Widget homePage() {
         backgroundColor: Theme.of(context).buttonColor,
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: FloatingActionButton(
-          backgroundColor: Colors.green,
+          backgroundColor: currentIndex.value == 0 ? Colors.green : Colors.blue,
           child: Icon(Icons.add),
           onPressed: () => Navigator.pushNamed(context, '/createPosting'),
         ),
         appBar: AppBar(
           centerTitle: true,
           title: currentIndex.value == 0 ? Text('Postings') : Text('Profile'),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(
-                FontAwesomeIcons.snowflake,
-                size: 20,
-              ),
-              onPressed: () {},
-            )
-          ],
           bottom: currentIndex.value == 0
               ? TabBar(
                   isScrollable: true,
                   labelColor: primaryColor,
-                  indicatorColor: primaryColor,
+                  indicatorColor: Colors.black26,
                   unselectedLabelColor: secondaryColor,
                   tabs: <Widget>[
                     Padding(
@@ -135,40 +136,41 @@ Widget homePage() {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text("Snow Clearing"),
+                      child: Text("Snow Clearing",
+                          style: TextStyle(color: Colors.blue)),
                     ),
                   ],
                 )
               : null,
         ),
         body: currentIndex.value == 0
-            ? Stack(
-                children: [
-                  TabBarView(
-                    children: [
-                      StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                        stream: DatabaseService().postings,
-                        builder: (BuildContext context,
-                            AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
-                                snapshot) {
-                          if (snapshot.hasError) {
-                            return Text('Something went wrong');
-                          }
+            ? StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                stream: DatabaseService().postings,
+                builder: (BuildContext context,
+                    AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                        snapshot) {
+                  if (snapshot.hasError) {
+                    return Text('Something went wrong');
+                  }
 
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return Text("Loading");
-                          }
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Text("Loading");
+                  }
 
-                          if (snapshot.hasData) {
-                            List<QueryDocumentSnapshot<Map<String, dynamic>>>
-                                elements = snapshot.data!.docs;
+                  if (snapshot.hasData) {
+                    List<QueryDocumentSnapshot<Map<String, dynamic>>> elements =
+                        snapshot.data!.docs;
 
-                            if (elements.isNotEmpty) {
-                              return new ListView.separated(
-                                itemCount: elements.length,
-                                itemBuilder: (context, index) {
-                                  final elementData = elements[index].data();
+                    if (elements.isNotEmpty) {
+                      return Stack(
+                        children: [
+                          TabBarView(children: [
+                            ListView.separated(
+                              itemCount: elements.length,
+                              itemBuilder: (context, index) {
+                                final elementData = elements[index].data();
+                                if (elementData['category'] ==
+                                    PostingCategory.LawnMowing.toString()) {
                                   final posting = Posting(
                                     title: elementData['title'],
                                     description: elementData['description'],
@@ -179,19 +181,41 @@ Widget homePage() {
                                     category: PostingCategory.LawnMowing,
                                   );
                                   return _buildArticleItem(posting);
-                                },
-                                separatorBuilder: (context, index) =>
-                                    const SizedBox(height: 16.0),
-                              );
-                            }
-                          }
-                          return Text('hello');
-                        },
-                      ),
-                      Text('hello')
-                    ],
-                  ),
-                ],
+                                }
+                                return SizedBox();
+                              },
+                              separatorBuilder: (context, index) =>
+                                  const SizedBox(height: 16.0),
+                            ),
+                            ListView.separated(
+                              itemCount: elements.length,
+                              itemBuilder: (context, index) {
+                                final elementData = elements[index].data();
+                                if (elementData['category'] ==
+                                    PostingCategory.SnowClearing.toString()) {
+                                  final posting = Posting(
+                                    title: elementData['title'],
+                                    description: elementData['description'],
+                                    price: elementData['price'].toDouble(),
+                                    image: elementData['image'],
+                                    creatorUID: elementData['creatorUID'],
+                                    employeeUID: elementData['employeeUID'],
+                                    category: PostingCategory.SnowClearing,
+                                  );
+                                  return _buildArticleItem(posting);
+                                }
+                                return SizedBox();
+                              },
+                              separatorBuilder: (context, index) =>
+                                  const SizedBox(height: 16.0),
+                            ),
+                          ])
+                        ],
+                      );
+                    }
+                  }
+                  return Text('hello');
+                },
               )
             : ProfilePage(),
         bottomNavigationBar: BottomAppBar(

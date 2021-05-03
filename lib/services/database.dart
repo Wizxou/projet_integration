@@ -85,4 +85,40 @@ class DatabaseService {
     });
     return newUserDoc;
   }
+
+  Future<UserData?> getUserData(String uid) async {
+    print('This is the use Data');
+    final docData = await userCollection.doc(uid).get();
+    print('This is the use Data');
+    if (docData.exists) {
+      if (docData.data() != null) {
+        final data = docData.data();
+        if (data!.isNotEmpty) {
+          return UserData(
+              postings: data['postings'],
+              uid: data['uid'],
+              username: data['username'],
+              email: data['email'],
+              bio: data['bio'],
+              isEmployee: data['isEmployee']);
+        }
+      }
+    }
+  }
+
+  Future<void> updateUserData(
+      {required String title,
+      required String description,
+      required String price,
+      required String image,
+      required String category,
+      required String postingUID}) async {
+    return await postingCollection.doc(postingUID).update({
+      'title': title,
+      'description': description,
+      'price': price,
+      'image': image,
+      'category': category,
+    });
+  }
 }
