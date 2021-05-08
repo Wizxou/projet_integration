@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:helpy/models/posting.dart';
 import 'package:helpy/models/user.dart';
+import 'package:uuid/uuid.dart';
 // import 'package:username_gen/username_gen.dart';
 
 class DatabaseService {
@@ -16,22 +17,44 @@ class DatabaseService {
         .then((qs) => qs.docs.forEach((result) => print(result.data())));
   }
 
-  Future<DocumentReference?> addPosting(
+  // Future<DocumentReference?> addPosting(
+  //     {required String title,
+  //     required String description,
+  //     required double price,
+  //     required String image,
+  //     required String category,
+  //     required String uid}) async {
+  //   return await postingCollection.add({
+  //     'title': title,
+  //     'description': description,
+  //     'price': price,
+  //     'image': image,
+  //     'category': category,
+  //     'employeeUID': '',
+  //     'creatorUID': uid
+  //   });
+  // }
+
+  Future<void> addPosting(
       {required String title,
       required String description,
       required double price,
       required String image,
       required String category,
-      required String uid}) async {
-    return await postingCollection.add({
+      required String creatorUID}) async {
+    var uuid = Uuid();
+    final docId = uuid.v4();
+    await postingCollection.doc(docId).set({
+      'uid': docId,
       'title': title,
       'description': description,
       'price': price,
       'image': image,
       'category': category,
       'employeeUID': '',
-      'creatorUID': uid
+      'creatorUID': creatorUID,
     });
+
   }
 
   Future<void> updatePosting({

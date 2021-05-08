@@ -107,7 +107,7 @@ Widget createPostingForm() {
                 price: double.parse(_priceListenable.text.trim()),
                 image: _imageListenable.text.trim(),
                 category: category.value.toString(),
-                uid: user?.uid ?? '');
+                creatorUID: user!.uid);
           },
         ),
       ],

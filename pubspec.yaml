@@ -20,6 +20,7 @@ dependencies:
   firebase_auth: ^1.1.3
   provider: ^5.0.0
   username_gen: ^1.0.2
+  uuid: ^3.0.4
 
 dev_dependencies:
   functional_widget: ^0.9.0+1
