@@ -43,24 +43,11 @@ Widget profilePage() {
                       const SizedBox(height: 10.0),
                       TextField(
                         decoration: InputDecoration(
-                          labelText: snapData!.email,
+                          labelText: snapData.email,
                         ),
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 18.0,
-                        ),
-                      ),
-                      const SizedBox(height: 20.0),
-                      MaterialButton(
-                        child: Text("Edit Profile"),
-                        color: Colors.green,
-                        onPressed: () {
-                          context.read<AuthenticationProvider>().signOut();
-                        },
-                        textColor: Colors.white,
-                        padding: const EdgeInsets.all(16.0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0),
                         ),
                       ),
                       const SizedBox(height: 20.0),

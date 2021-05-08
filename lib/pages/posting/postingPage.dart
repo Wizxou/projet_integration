@@ -6,6 +6,9 @@ import 'package:functional_widget_annotation/functional_widget_annotation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:helpy/models/posting.dart';
+import 'package:helpy/models/user.dart';
+import 'package:helpy/pages/editPosting/editPostingPage.dart';
+import 'package:helpy/providers/authenticationProvider.dart';
 import 'package:helpy/services/database.dart';
 import 'package:provider/provider.dart';
 part 'postingPage.g.dart';
@@ -19,19 +22,117 @@ Widget postingPage(Posting posting) {
   final Color secondaryColor = Color(0xff324558);
 
   Widget _buildButtons() {
-    return RaisedButton(
-      color: Colors.green,
-      textColor: Colors.white,
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-      child: Text("Create the posting"),
-      onPressed: () async {
-        DatabaseService().getUserData(user!.uid);
+    return FutureBuilder(
+        future: DatabaseService().getUserData(user!.uid),
+        builder: (context, AsyncSnapshot<UserData?> snapshot) {
+          print(snapshot);
+          if (!snapshot.hasData) {
+            return Center(child: Text('Loading'));
+          }
+          if (snapshot.data != null) {
+            final snapData = snapshot.data;
+            if (snapData!.isEmployee == true) {
+              if (posting.employeeUID == user.uid) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    RaisedButton(
+                      color: Colors.red,
+                      textColor: Colors.white,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      child: Text("Not Intrested Anymore"),
+                      onPressed: () async {},
+                    ),
+                  ],
+                );
+              }
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  RaisedButton(
+                    color: Colors.green,
+                    textColor: Colors.white,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    child: Text("Intrested"),
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                          title: Text(
+                            'Are you sure you want to take this posting?',
+                          ),
+                          content: Text(
+                              'You have to contact the author of this posting for more information'),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              );
+            }
 
-      },
-    );
+            if (user.uid == '${posting.creatorUID}') {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          RaisedButton(
+                            color: Colors.grey,
+                            textColor: Colors.white,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+                            child: Text("Edit your posting"),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          EditPostingPage(posting)));
+                            },
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          RaisedButton(
+                            color: Colors.red,
+                            textColor: Colors.white,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+                            child: Text("Delete your posting"),
+                            onPressed: () async {
+                              await DatabaseService()
+                                  .removePosting(posting.uid);
+                              Navigator.pop(context);
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              );
+            }
+          }
+          return SizedBox();
+        });
   }
 
   return Theme(
@@ -119,21 +220,7 @@ Widget postingPage(Posting posting) {
                   SizedBox(
                     height: 10.0,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      RaisedButton(
-                        color: Colors.green,
-                        textColor: Colors.white,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                        ),
-                        child: _buildButtons(),
-                        onPressed: () {},
-                      ),
-                    ],
-                  ),
+                  _buildButtons()
                 ],
               ),
             ),

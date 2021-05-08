@@ -34,13 +34,15 @@ class DatabaseService {
     });
   }
 
-  Future<void> updatePosting(
-      {required String title,
-      required String description,
-      required String price,
-      required String image,
-      required String category,
-      required String postingUID}) async {
+  Future<void> updatePosting({
+    required String postingUID,
+    required String title,
+    required String description,
+    required double price,
+    required String image,
+    required String category,
+  }) async {
+    print('In update posting $postingUID');
     return await postingCollection.doc(postingUID).update({
       'title': title,
       'description': description,
@@ -58,6 +60,7 @@ class DatabaseService {
   List<Posting> _postingListFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc) {
       return Posting(
+          uid: doc['uid'],
           title: doc['title'],
           description: doc['title'],
           price: doc['price'],

@@ -1,6 +1,7 @@
 enum PostingCategory { LawnMowing, SnowClearing }
 
 class Posting {
+  final String uid;
   final String title;
   final String description;
   final double price;
@@ -10,7 +11,8 @@ class Posting {
   final PostingCategory category;
 
   Posting(
-      {required this.title,
+      {required this.uid,
+      required this.title,
       required this.description,
       required this.price,
       required this.image,

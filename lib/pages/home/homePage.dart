@@ -116,7 +116,7 @@ Widget homePage() {
         backgroundColor: Theme.of(context).buttonColor,
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: FloatingActionButton(
-          backgroundColor: currentIndex.value == 0 ? Colors.green : Colors.blue,
+          backgroundColor: Colors.green,
           child: Icon(Icons.add),
           onPressed: () => Navigator.pushNamed(context, '/createPosting'),
         ),
@@ -172,6 +172,7 @@ Widget homePage() {
                                 if (elementData['category'] ==
                                     PostingCategory.LawnMowing.toString()) {
                                   final posting = Posting(
+                                    uid: elementData['uid'],
                                     title: elementData['title'],
                                     description: elementData['description'],
                                     price: elementData['price'].toDouble(),
@@ -194,6 +195,7 @@ Widget homePage() {
                                 if (elementData['category'] ==
                                     PostingCategory.SnowClearing.toString()) {
                                   final posting = Posting(
+                                    uid: elementData['uid'],
                                     title: elementData['title'],
                                     description: elementData['description'],
                                     price: elementData['price'].toDouble(),
@@ -214,7 +216,7 @@ Widget homePage() {
                       );
                     }
                   }
-                  return Text('hello');
+                  return Center(child: Text('No postings found'));
                 },
               )
             : ProfilePage(),
