@@ -31,9 +31,12 @@ Widget profilePage() {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      TextField(
+                      TextFormField(
+                        enabled: false,
                         decoration: InputDecoration(
-                          labelText: snapData!.username,
+                          labelText: snapData!.isEmployee
+                              ? 'You are an employee'
+                              : 'You are a customer',
                         ),
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -42,6 +45,7 @@ Widget profilePage() {
                       ),
                       const SizedBox(height: 10.0),
                       TextField(
+                        enabled: false,
                         decoration: InputDecoration(
                           labelText: snapData.email,
                         ),

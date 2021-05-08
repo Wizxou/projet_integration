@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -44,7 +45,12 @@ Widget postingPage(Posting posting) {
                         borderRadius: BorderRadius.circular(20.0),
                       ),
                       child: Text("Not Intrested Anymore"),
-                      onPressed: () async {},
+                      onPressed: () async {
+                          await DatabaseService().updatePostingEmployee(
+                                    postingUID: posting.uid,
+                                    employeeUID: '');
+                                Navigator.pop(context);
+                      },
                     ),
                   ],
                 );
@@ -69,6 +75,26 @@ Widget postingPage(Posting posting) {
                           ),
                           content: Text(
                               'You have to contact the author of this posting for more information'),
+                          actions: [
+                            FlatButton(
+                              onPressed: () async {
+                                await DatabaseService().updatePostingEmployee(
+                                    postingUID: posting.uid,
+                                    employeeUID: user.uid);
+                                Navigator.of(context, rootNavigator: true)
+                                    .pop('dialog');
+                                Navigator.pop(context);
+                              },
+                              child: Text('Yes'),
+                            ),
+                            FlatButton(
+                              onPressed: () {
+                                Navigator.of(context, rootNavigator: true)
+                                    .pop('dialog');
+                              },
+                              child: Text('No'),
+                            ),
+                          ],
                         ),
                       );
                     },

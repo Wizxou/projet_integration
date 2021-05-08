@@ -57,6 +57,16 @@ class DatabaseService {
 
   }
 
+  Future<void> updatePostingEmployee({
+    required String postingUID,
+    required String employeeUID,
+  }) async {
+    print('In update posting employee $postingUID');
+    return await postingCollection.doc(postingUID).update({
+      'employeeUID': employeeUID,
+    });
+  }
+
   Future<void> updatePosting({
     required String postingUID,
     required String title,
