@@ -110,11 +110,12 @@ class DatabaseService {
   }
 
 // User
-  Future<void> createUserData(String uid,
-      {required String email, required bool isEmployee}) async {
+  Future<void> createUserData(
+      {required String uid, required String email, required bool isEmployee}) async {
     final newUserDoc = await userCollection.doc(uid).set({
+      'uid': uid,
       'username': 'default',
-      'email': '',
+      'email': email,
       'isEmployee': isEmployee,
       'bio': '',
       'postings': [],

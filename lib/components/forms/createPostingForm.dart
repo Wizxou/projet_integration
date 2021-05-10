@@ -108,6 +108,7 @@ Widget createPostingForm() {
                 image: _imageListenable.text.trim(),
                 category: category.value.toString(),
                 creatorUID: user!.uid);
+                Navigator.pop(context);
           },
         ),
       ],

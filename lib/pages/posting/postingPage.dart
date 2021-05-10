@@ -44,7 +44,7 @@ Widget postingPage(Posting posting) {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20.0),
                       ),
-                      child: Text("Not Intrested Anymore"),
+                      child: Text("Not Interested Anymore"),
                       onPressed: () async {
                           await DatabaseService().updatePostingEmployee(
                                     postingUID: posting.uid,
@@ -65,7 +65,7 @@ Widget postingPage(Posting posting) {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0),
                     ),
-                    child: Text("Intrested"),
+                    child: Text("Interested"),
                     onPressed: () {
                       showDialog(
                         context: context,
