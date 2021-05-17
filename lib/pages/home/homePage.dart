@@ -179,6 +179,9 @@ Widget homePage() {
                                     image: elementData['image'],
                                     creatorUID: elementData['creatorUID'],
                                     employeeUID: elementData['employeeUID'],
+                                    area: elementData['area'].toDouble(),
+                                    phone: elementData['phone'],
+                                    address: elementData['address'],
                                     category: PostingCategory.LawnMowing,
                                   );
                                   return _buildArticleItem(posting);
@@ -202,6 +205,9 @@ Widget homePage() {
                                     image: elementData['image'],
                                     creatorUID: elementData['creatorUID'],
                                     employeeUID: elementData['employeeUID'],
+                                    area: elementData['area'].toDouble(),
+                                    phone: elementData['phone'],
+                                    address: elementData['address'],
                                     category: PostingCategory.SnowClearing,
                                   );
                                   return _buildArticleItem(posting);

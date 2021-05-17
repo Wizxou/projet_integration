@@ -25,6 +25,17 @@ Widget createPostingForm() {
   final _price = useTextEditingController();
   final _priceListenable = useValueListenable(_price);
 
+  final _phone = useTextEditingController();
+  final _phoneListenable = useValueListenable(_phone);
+
+  final _area = useTextEditingController();
+  final _areaListenable = useValueListenable(_area);
+
+  final _address = useTextEditingController();
+  final _addressListenable = useValueListenable(_address);
+
+
+
   return Container(
     margin: const EdgeInsets.all(16.0),
     child: ListView(
@@ -38,16 +49,7 @@ Widget createPostingForm() {
             border: OutlineInputBorder(),
           ),
         ),
-        const SizedBox(height: 10.0),
-        TextField(
-          minLines: 5,
-          maxLines: 10,
-          controller: _description,
-          decoration: InputDecoration(
-            hintText: "Enter description",
-            border: OutlineInputBorder(),
-          ),
-        ),
+       
         const SizedBox(height: 10.0),
         TextField(
           controller: _image,
@@ -62,6 +64,43 @@ Widget createPostingForm() {
           keyboardType: TextInputType.number,
           decoration: InputDecoration(
             hintText: "Enter price",
+            border: OutlineInputBorder(),
+          ),
+        ),
+        const SizedBox(height: 10.0),
+        TextField(
+          controller: _phone,
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(
+            hintText: "Enter phone number",
+            border: OutlineInputBorder(),
+          ),
+        ),
+        const SizedBox(height: 10.0),
+        TextField(
+          controller: _area,
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(
+            hintText: "Enter area",
+            border: OutlineInputBorder(),
+          ),
+        ),
+        const SizedBox(height: 10.0),
+        TextField(
+          controller: _address,
+          keyboardType: TextInputType.text,
+          decoration: InputDecoration(
+            hintText: "Enter address",
+            border: OutlineInputBorder(),
+          ),
+        ),
+         const SizedBox(height: 10.0),
+        TextField(
+          minLines: 5,
+          maxLines: 10,
+          controller: _description,
+          decoration: InputDecoration(
+            hintText: "Enter description",
             border: OutlineInputBorder(),
           ),
         ),
@@ -107,6 +146,9 @@ Widget createPostingForm() {
                 price: double.parse(_priceListenable.text.trim()),
                 image: _imageListenable.text.trim(),
                 category: category.value.toString(),
+                area: double.parse(_areaListenable.text.trim()),
+                address: _addressListenable.text.trim(),
+                phone: _phoneListenable.text.trim(),
                 creatorUID: user!.uid);
           },
         ),

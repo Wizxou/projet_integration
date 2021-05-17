@@ -8,6 +8,9 @@ class Posting {
   final String image;
   final String creatorUID;
   final String employeeUID;
+  final double area;
+  final String phone;
+  final String address;
   final PostingCategory category;
 
   Posting(
@@ -18,5 +21,8 @@ class Posting {
       required this.image,
       required this.creatorUID,
       required this.employeeUID,
+      required this.area,
+      required this.phone,
+      required this.address,
       required this.category});
 }

@@ -41,6 +41,9 @@ class DatabaseService {
       required double price,
       required String image,
       required String category,
+      required double area,
+      required String address,
+      required String phone,
       required String creatorUID}) async {
     var uuid = Uuid();
     final docId = uuid.v4();
@@ -53,8 +56,10 @@ class DatabaseService {
       'category': category,
       'employeeUID': '',
       'creatorUID': creatorUID,
+      'phone': phone,
+      'area': area,
+      'address': address
     });
-
   }
 
   Future<void> updatePostingEmployee({
@@ -74,6 +79,9 @@ class DatabaseService {
     required double price,
     required String image,
     required String category,
+    required double area,
+    required String address,
+    required String phone,
   }) async {
     print('In update posting $postingUID');
     return await postingCollection.doc(postingUID).update({
@@ -100,6 +108,9 @@ class DatabaseService {
           image: doc['title'],
           creatorUID: doc['creatorUID'],
           employeeUID: doc['employeeUID'],
+          area: doc['area'],
+          phone: doc['phone'],
+          address: doc['address'],
           category: doc['category']);
     }).toList();
   }
