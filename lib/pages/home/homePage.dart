@@ -9,6 +9,7 @@ import 'package:helpy/pages/posting/postingPage.dart';
 import 'package:helpy/pages/profile/profilePage.dart';
 import 'package:helpy/services/database.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 part 'homePage.g.dart';
 
 @hwidget
@@ -20,12 +21,12 @@ Widget homePage() {
   final Color bgColor = Color(0xffF9E0E3);
   final Color secondaryColor = Color(0xff324558);
 
-  // print(user);
-
   Widget _buildArticleItem(Posting posting) {
     final postingColor = posting.category == PostingCategory.LawnMowing
         ? primaryColor
         : Colors.blue;
+        final formatCurrency = new NumberFormat("#,##0.00", "en_US");
+        final formattedPrice = formatCurrency.format(posting.price);
     return GestureDetector(
       onTap: () {
         Navigator.push(context,
@@ -73,7 +74,7 @@ Widget homePage() {
                           TextSpan(
                             children: [
                               TextSpan(
-                                  text: '${posting.price}',
+                                  text: 'Prix : $formattedPrice \$ ',
                                   style: TextStyle(fontSize: 16.0)),
                             ],
                           ),

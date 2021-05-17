@@ -39,7 +39,7 @@ Widget authPage() {
                       ),
                       const SizedBox(height: 10.0),
                       Text(
-                        "Welcome to handyApp!! \n Make things happen for yourself.",
+                        "Welcome to Coup de Pouce!! \n Make things happen for yourself.",
                         style: TextStyle(
                           color: Colors.white70,
                           fontSize: 18.0,
@@ -87,19 +87,7 @@ Widget authPage() {
                     const SizedBox(width: 10.0),
                   ],
                 ),
-                const SizedBox(height: 40.0),
-                OutlineButton.icon(
-                  borderSide: BorderSide(color: Colors.green),
-                  color: Colors.green,
-                  textColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
-                  icon: Icon(FontAwesomeIcons.google),
-                  label: Text("Continue with Google"),
-                  onPressed: () {},
-                ),
-                const SizedBox(height: 20.0),
+                const SizedBox(height: 40.0)
               ],
             ),
           ),

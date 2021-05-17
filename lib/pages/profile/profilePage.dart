@@ -14,6 +14,13 @@ part 'profilePage.g.dart';
 Widget profilePage() {
   final context = useContext();
   final user = Provider.of<User?>(context);
+
+  // return Center(child: Text('hello world'));
+
+  // useEffect((){
+  //   context.read<AuthenticationProvider>().signOut();
+  // }, []);
+
   return FutureBuilder(
       future: DatabaseService().getUserData(user!.uid),
       builder: (context, AsyncSnapshot<UserData?> snapshot) {

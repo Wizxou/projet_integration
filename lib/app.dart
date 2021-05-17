@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 
 part 'app.g.dart';
 
+
 @hwidget
 Widget app() {
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();

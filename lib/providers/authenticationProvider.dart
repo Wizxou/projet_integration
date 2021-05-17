@@ -23,12 +23,12 @@ class AuthenticationProvider {
   }
 
   Future<String> signUp(String email, String password,
-      {required isEmployee}) async {
+      {required isEmployee, }) async {
     try {
       final userCredentials = await firebaseAuth.createUserWithEmailAndPassword(
           email: email, password: password);
       if (userCredentials.user != null) {
-        await DatabaseService().createUserData(userCredentials.user!.uid,
+        await DatabaseService().createUserData(uid: userCredentials.user!.uid,
             email: email, isEmployee: isEmployee);
       }
       return "Signed up";

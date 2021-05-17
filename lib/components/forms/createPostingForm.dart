@@ -150,6 +150,7 @@ Widget createPostingForm() {
                 address: _addressListenable.text.trim(),
                 phone: _phoneListenable.text.trim(),
                 creatorUID: user!.uid);
+                Navigator.pop(context);
           },
         ),
       ],
